@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Library</title>
+	<meta charset="utf-8"/>
+	<link rel="stylesheet" type="text/css" href="css/reset.css">
+	<link rel="stylesheet" type="text/css" href="css/styles.css">
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet"> 
+</head>
+<body>
+	<h1>Library</h1>
+	<main id="books">
+		<div class="book-card" id="card-add-book">
+			<div id="add-book-facade">
+				<!-- Thanks Tabler Icons for svg icon -->
+				<svg xmlns="http://www.w3.org/2000/svg" class="book-add-icon icon icon-tabler icon-tabler-circle-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="12" cy="12" r="9" /><line x1="9" y1="12" x2="15" y2="12" /><line x1="12" y1="9" x2="12" y2="15" /></svg>
+				<button class="btn add-book-btn">add new book</button>
+			</div>
+			
+			<div id="add-book" class="hide">
+				<h2>Add new book</h2>
+				<form id="add-book-form">
+					<label>
+						Title
+						<input type="text" name="title" required/>
+					</label>
+					<label>
+						Pages
+						<input type="number" name="pages" min="0" required/>
+					</label>
+					<label>
+						Author
+						<input type="text" name="author" required/>
+					</label>
+					<label class="read-status-label">
+						You read this book?
+						<div class="read-status-container">
+							<input type="checkbox" name="read-status"/> <span> Yes, I read.</span>
+						</div>
+					</label>
+					<button type="submit" class="btn">Add new Book</button>
+				</form>
+			</div>
+		</div>
+	</main>
+	<script type="text/javascript" src="js/library.js"></script>
+	<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+</body>
+</html>
