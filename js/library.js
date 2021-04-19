@@ -5,8 +5,15 @@ let addBookContainer = document.getElementById("add-book");
 let addBookForm = document.getElementById("add-book-form");
 let cardAddBook = document.getElementById("card-add-book");
 let booksList = document.getElementById("books");
+let BOOK_ELEMENTS = {
+	TITLE: {type: "h3", class: "book-title"},
+	PAGE: {type: "p", class: "book-pages"},
+	AUTHOR: {type: "p", class: "book-author"},
+	READ: {type: "button", class: "btn book-read-status"},
+	REMOVE: {type: "button", class: "btn book-remove"}
+};
 
-loadLibrary();
+loadLibraryStorage();
 
 function Book(title, author, pages, read) {
 	this.title = title;
@@ -25,33 +32,27 @@ function addBookToLibrary(title, author, pages, read){
 function addBookCard(book) {
 	let bookCard = createElement("div", "book-card");
 	booksList.insertBefore(bookCard, cardAddBook);
+	
+	createBookElement(BOOK_ELEMENTS.TITLE, bookCard, book.title);
+	createBookElement(BOOK_ELEMENTS.PAGE, bookCard, book.pages);
+	createBookElement(BOOK_ELEMENTS.AUTHOR, bookCard, book.author);
 
-	let bookTitle = createElement("h3", "book-title");
-	insertElement(bookTitle, bookCard);
-	bookTitle.textContent = book.title;
-
-	let bookPages = createElement("p", "book-pages");
-	insertElement(bookPages, bookCard);
-	bookPages.textContent = book.pages;
-
-	let bookAuthor = createElement("p", "book-author");
-	insertElement(bookAuthor, bookCard);
-	bookAuthor.textContent = book.author;
-
-	let bookButtonRead = createElement("button", "btn book-read-status");
-	insertElement(bookButtonRead, bookCard);
-	let readStatusMessage = "you don't read this book.";
-	if(book.read) {
-		readStatusMessage = "you read this book.";
-		bookButtonRead.setAttribute("read", "");
-	}
-	bookButtonRead.textContent = readStatusMessage;
+	let readStatusMessage = book.read ? "you read this book." : "you don't read this book.";
+	let bookButtonRead = createBookElement(BOOK_ELEMENTS.READ, bookCard, readStatusMessage, book.read);
 	bookButtonRead.addEventListener("click", changeBookStatus);
 
-	let bookButtonRemove = createElement("button", "btn book-remove");
-	insertElement(bookButtonRemove, bookCard);
-	bookButtonRemove.textContent = "click to remove this book";
+	let bookButtonRemove = createBookElement(BOOK_ELEMENTS.REMOVE, bookCard, "click to remove this book");
 	bookButtonRemove.addEventListener("click", removeBook);
+}
+
+function createBookElement(element, bookCard, textContent, add_read_attr = false) {
+	let domElement = createElement(element.type, element.class);
+	insertElement(domElement, bookCard);
+	domElement.textContent = textContent;
+	if(add_read_attr) 
+		domElement.setAttribute("read", "");
+	
+	return domElement;
 }
 
 function getBookByCard(card) {
@@ -124,7 +125,7 @@ addBookForm.addEventListener("submit", () => {
 
 // storage
 
-function loadLibrary() {
+function getValidLibraryStorage() {
 	if (!localStorageAvailable()){
 		return;
 	}
@@ -140,13 +141,18 @@ function loadLibrary() {
 		return;
 
 	library = library.filter(book => book.title != null && book.pages != null && book.read != null && book.author != null)
-
 	if (library.length != 0) {
-		myLibrary = library;
-		myLibrary.forEach(book => addBookCard(book));
-	} else {
-		return;
+		return library;
 	}
+}
+
+function loadLibraryStorage() {
+	library = getValidLibraryStorage();
+	if (library == null)
+		return;
+
+	myLibrary = library;
+	myLibrary.forEach(book => addBookCard(book));
 }
 
 function changeLibraryStorage() {
@@ -155,7 +161,6 @@ function changeLibraryStorage() {
 	
 	localStorage.setItem("myLibrary", JSON.stringify(myLibrary));
 }
-
 
 // adaptation of https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API#testing_for_availability storageAvailable function code.
 function localStorageAvailable() {
